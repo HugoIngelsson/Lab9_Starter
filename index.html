@@ -87,6 +87,13 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "0fd0e5031da74e2d89a440c08e54720e"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -95,13 +102,123 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      let result;
+
+      try {
+        result = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err) {
+        result = 'NaN';
+        console.error(err);
+      } finally {
+        output.innerHTML = result;
+      }
     });
+
+    class MySuperCoolError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = 'MySuperCoolError';
+      }
+    }
+
+    function errorProne() {
+      if (Math.random() < 0.5)
+        throw new MySuperCoolError('Luck\'s not on your side today, huh?');
+
+      return 'You just won $1000!';
+    }
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    // Console Log
+    errorBtns[0].addEventListener('click', () => {
+      console.log('log event');
+    });
+
+    // Console Error
+    errorBtns[1].addEventListener('click', () => {
+      try {
+        console.log(errorProne());
+        console.log('Click some more times to try your luck, eh?');
+      } catch (err) {
+        console.error(err.name);
+        console.error(err);
+      }
+    });
+
+    // Console Count
+    errorBtns[2].addEventListener('click', () => {
+      console.count('counter');
+    });
+
+    // Console Warn
+    errorBtns[3].addEventListener('click', () => {
+      console.warn('warning event');
+    });
+
+    // Console Assert
+    errorBtns[4].addEventListener('click', () => {
+      const x = 3, y = 5;
+      const reason = 'x should be greater than y';
+      console.assert(x > y, {x, y, reason});
+    });
+
+    // Console Clear
+    errorBtns[5].addEventListener('click', () => {
+      console.clear();
+    });
+
+    // Console Dir
+    errorBtns[6].addEventListener('click', () => {
+      console.log('printing document head');
+      console.dir(document.head);
+    });
+
+    // Console dirxml
+    errorBtns[7].addEventListener('click', () => {
+      console.log('printing form as XML');
+      console.dirxml(form);
+    });
+
+    // Console Group Start
+    errorBtns[8].addEventListener('click', () => {
+      console.group('my group');
+    });
+
+    // Console Group End
+    errorBtns[9].addEventListener('click', () => {
+      console.groupEnd('my group')
+    });
+
+    // Console Table
+    errorBtns[10].addEventListener('click', () => {
+      const classes = [['Dog', 'Canine'], ['Cat', 'Feline'], ['Wolf', 'Canine']]
+      console.table(classes);
+    });
+
+    // Start Timer
+    errorBtns[11].addEventListener('click', () => {
+      console.log('starting timer');
+      console.time('timer');
+    });
+
+    // End Timer
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd('timer');
+    });
+
+    // Console Trace
+    errorBtns[13].addEventListener('click', () => {
+      const deep = () => { deeper(); }
+      const deeper = () => { deepest(); }
+      const deepest = () => { console.trace(); }
+      deep();
+    });
+
+    // Trigger a Global Error
+    errorBtns[14].addEventListener('click', () => {
+      throw new MySuperCoolError();
+    });
   </script>
 </body>
 
